@@ -1,5 +1,29 @@
 import { Line } from 'react-chartjs-2'
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    TimeScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+} from 'chart.js'
 import './FluidRateChart.css'
+import 'chartjs-adapter-date-fns'
+
+// Register ChartJS components
+ChartJS.register(
+    TimeScale,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+)
 
 interface FluidEntry {
     datetime: string;
@@ -44,11 +68,13 @@ export function FluidRateChart({ entries }: FluidRateChartProps) {
     const rateData = calculateDailyRates()
 
     const chartData = {
-        labels: rateData.map(entry => new Date(entry.datetime).toLocaleString()),
         datasets: [
             {
                 label: 'Fluid Rate (ml/24h)',
-                data: rateData.map(entry => entry.rate),
+                data: rateData.map(entry => ({
+                    x: new Date(entry.datetime),
+                    y: entry.rate
+                })),
                 borderColor: 'rgb(255, 99, 132)',
                 tension: 0.1
             }
@@ -63,10 +89,41 @@ export function FluidRateChart({ entries }: FluidRateChartProps) {
             },
             title: {
                 display: true,
-                text: 'Fluid Intake Rate'
+                text: 'Fluid Rate'
+            },
+            tooltip: {
+                callbacks: {
+                    title: (context: any) => {
+                        const date = new Date(context[0].parsed.x);
+                        return date.toLocaleString('de-DE', {
+                            day: 'numeric',
+                            month: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                    }
+                }
             }
         },
         scales: {
+            x: {
+                type: 'time' as const,
+                time: {
+                    unit: 'hour',
+                    stepSize: 6,
+                    displayFormats: {
+                        hour: 'd.MM., HH:mm'
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Time'
+                },
+                ticks: {
+                    maxTicksLimit: 8
+                }
+            },
             y: {
                 beginAtZero: true,
                 title: {

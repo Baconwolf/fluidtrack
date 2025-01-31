@@ -2,6 +2,7 @@ import { Line } from 'react-chartjs-2'
 import {
     Chart as ChartJS,
     CategoryScale,
+    TimeScale,
     LinearScale,
     PointElement,
     LineElement,
@@ -9,10 +10,12 @@ import {
     Tooltip,
     Legend
 } from 'chart.js'
+import 'chartjs-adapter-date-fns'
 import './FluidChart.css'
 
 // Register ChartJS components
 ChartJS.register(
+    TimeScale,
     CategoryScale,
     LinearScale,
     PointElement,
@@ -33,11 +36,13 @@ interface FluidChartProps {
 
 export function FluidChart({ entries }: FluidChartProps) {
     const chartData = {
-        labels: entries.map(entry => new Date(entry.datetime).toLocaleString()),
         datasets: [
             {
                 label: 'Fluid (ml)',
-                data: entries.map(entry => Number(entry.amount)),
+                data: entries.map(entry => ({
+                    x: new Date(entry.datetime),
+                    y: Number(entry.amount)
+                })),
                 borderColor: 'rgb(75, 192, 192)',
                 tension: 0.1
             }
@@ -53,11 +58,41 @@ export function FluidChart({ entries }: FluidChartProps) {
             title: {
                 display: true,
                 text: 'Fluid Over Time'
+            },
+            tooltip: {
+                callbacks: {
+                    title: (context: any) => {
+                        const date = new Date(context[0].parsed.x);
+                        return date.toLocaleString('de-DE', {
+                            day: 'numeric',
+                            month: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                    }
+                }
             }
         },
         scales: {
+            x: {
+                type: 'time' as const,
+                time: {
+                    unit: 'hour',
+                    displayFormats: {
+                        hour: 'd.MM., HH:mm'
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Time'
+                },
+                ticks: {
+                    maxTicksLimit: 8,
+                    autoSkip: true
+                }
+            },
             y: {
-                beginAtZero: true,
                 title: {
                     display: true,
                     text: 'Amount (ml)'
