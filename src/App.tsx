@@ -15,6 +15,10 @@ function App() {
 
   const [datetime, setDatetime] = useState(getCurrentDateTime())
   const [fluidAmount, setFluidAmount] = useState('')
+  const [baseAmount, setBaseAmount] = useState(() => {
+    const saved = localStorage.getItem('baseAmount')
+    return saved ? saved : '0'
+  })
 
   interface FluidEntry {
     datetime: string;
@@ -28,13 +32,18 @@ function App() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const newEntry = { datetime, amount: fluidAmount }
+    const totalAmount = (Number(fluidAmount) + Number(baseAmount)).toString()
+    const newEntry = { datetime, amount: totalAmount }
     const updatedEntries = [...entries, newEntry]
     setEntries(updatedEntries)
     localStorage.setItem('fluidEntries', JSON.stringify(updatedEntries))
-
-    // Only reset the amount, keep the datetime
     setFluidAmount('')
+  }
+
+  const handleBaseAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newBaseAmount = e.target.value
+    setBaseAmount(newBaseAmount)
+    localStorage.setItem('baseAmount', newBaseAmount)
   }
 
   const handleClear = () => {
@@ -48,25 +57,46 @@ function App() {
         <h2>Fluid Tracker</h2>
         <form onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="datetime">Date and Time:</label>
-            <input
-              type="datetime-local"
-              id="datetime"
-              value={datetime}
-              onChange={(e) => setDatetime(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="fluid">Fluid Amount (ml):</label>
+            <label htmlFor="baseAmount">Base Amount (ml):</label>
             <input
               type="number"
-              id="fluid"
-              value={fluidAmount}
-              onChange={(e) => setFluidAmount(e.target.value)}
+              id="baseAmount"
+              value={baseAmount}
+              onChange={handleBaseAmountChange}
               min="0"
-              required
             />
+            <small className="helper-text">
+              This amount will be added to each entry automatically
+            </small>
+          </div>
+          <div className="input-row">
+            <div>
+              <label htmlFor="datetime">Date and Time:</label>
+              <input
+                type="datetime-local"
+                id="datetime"
+                value={datetime}
+                onChange={(e) => setDatetime(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="fluid">Additional Fluid (ml):</label>
+              <input
+                type="number"
+                id="fluid"
+                value={fluidAmount}
+                onChange={(e) => setFluidAmount(e.target.value)}
+                min="0"
+                required
+              />
+              {Number(baseAmount) > 0 && (
+                <small className="helper-text">
+                  Total: {Number(fluidAmount) + Number(baseAmount)}ml
+                  (Base: {baseAmount}ml + Additional: {fluidAmount}ml)
+                </small>
+              )}
+            </div>
           </div>
           <button type="submit">Save Entry</button>
         </form>
