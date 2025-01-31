@@ -83,6 +83,7 @@ export function FluidRateChart({ entries }: FluidRateChartProps) {
 
     const chartOptions = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 position: 'top' as const,

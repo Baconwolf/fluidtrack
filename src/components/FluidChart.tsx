@@ -51,6 +51,7 @@ export function FluidChart({ entries }: FluidChartProps) {
 
     const chartOptions = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 position: 'top' as const,
