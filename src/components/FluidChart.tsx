@@ -79,7 +79,7 @@ export function FluidChart({ entries }: FluidChartProps) {
             x: {
                 type: 'time' as const,
                 time: {
-                    unit: 'hour',
+                    unit: 'hour' as const,
                     displayFormats: {
                         hour: 'd.MM., HH:mm'
                     }

@@ -111,7 +111,7 @@ export function FluidRateChart({ entries }: FluidRateChartProps) {
             x: {
                 type: 'time' as const,
                 time: {
-                    unit: 'hour',
+                    unit: 'hour' as const,
                     stepSize: 6,
                     displayFormats: {
                         hour: 'd.MM., HH:mm'
