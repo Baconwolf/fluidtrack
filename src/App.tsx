@@ -33,8 +33,7 @@ function App() {
     setEntries(updatedEntries)
     localStorage.setItem('fluidEntries', JSON.stringify(updatedEntries))
 
-    // Reset form
-    setDatetime(getCurrentDateTime())
+    // Only reset the amount, keep the datetime
     setFluidAmount('')
   }
 
