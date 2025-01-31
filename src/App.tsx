@@ -1,27 +1,7 @@
 import { useState } from 'react'
 import './App.css'
-import { Line } from 'react-chartjs-2'
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-} from 'chart.js'
-
-// Register ChartJS components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-)
+import { FluidTable } from './components/FluidTable'
+import { FluidChart } from './components/FluidChart'
 
 function App() {
   // Format current datetime to match datetime-local input format (YYYY-MM-DDThh:mm)
@@ -62,41 +42,6 @@ function App() {
     localStorage.removeItem('fluidEntries')
   }
 
-  // Prepare data for the chart
-  const chartData = {
-    labels: entries.map(entry => new Date(entry.datetime).toLocaleString()),
-    datasets: [
-      {
-        label: 'Fluid Intake (ml)',
-        data: entries.map(entry => Number(entry.amount)),
-        borderColor: 'rgb(75, 192, 192)',
-        tension: 0.1
-      }
-    ]
-  }
-
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: true,
-        text: 'Fluid Over Time'
-      }
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: 'Amount (ml)'
-        }
-      }
-    }
-  }
-
   return (
     <>
       <div className="card">
@@ -126,29 +71,13 @@ function App() {
           <button type="submit">Save Entry</button>
         </form>
 
-        <div className="entries-list">
+        <div className="entries-section">
           <h3>Previous Entries</h3>
-          {entries.length > 0 ? (
-            <>
-              <div style={{
-                marginBottom: '20px',
-                width: '100%',
-                maxWidth: '1000px',  // Increased from 800px
-              }}>
-                <Line data={chartData} options={chartOptions} />
-              </div>
-              <ul>
-                {entries.map((entry, index) => (
-                  <li key={index}>
-                    {new Date(entry.datetime).toLocaleString()}: {entry.amount} ml
-                  </li>
-                ))}
-              </ul>
-              <button onClick={handleClear}>Clear All Entries</button>
-            </>
-          ) : (
-            <p>No entries yet</p>
-          )}
+          {entries.length > 0 && <FluidChart entries={entries} />}
+          <FluidTable
+            entries={entries}
+            onClear={handleClear}
+          />
         </div>
       </div>
     </>
