@@ -3,6 +3,7 @@ import './App.css'
 import { FluidTable } from './components/FluidTable'
 import { FluidChart } from './components/FluidChart'
 import { FluidRateChart } from './components/FluidRateChart'
+import { DataTransfer } from './components/DataTransfer'
 
 function App() {
   // Format current datetime to match datetime-local input format (YYYY-MM-DDThh:mm)
@@ -50,6 +51,11 @@ function App() {
     setEntries([])
     localStorage.removeItem('fluidEntries')
   }
+
+  const handleImport = (newEntries: FluidEntry[]) => {
+    setEntries(newEntries);
+    localStorage.setItem('fluidEntries', JSON.stringify(newEntries));
+  };
 
   return (
     <>
@@ -102,7 +108,6 @@ function App() {
         </form>
 
         <div className="entries-section">
-          <h3>Previous Entries</h3>
           {entries.length > 0 && (
             <div className="charts-container">
               <FluidChart entries={entries} />
@@ -113,6 +118,9 @@ function App() {
             entries={entries}
             onClear={handleClear}
           />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <DataTransfer entries={entries} onImport={handleImport} />
+          </div>
         </div>
       </div>
     </>

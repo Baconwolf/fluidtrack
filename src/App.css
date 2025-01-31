@@ -111,3 +111,24 @@ input {
     grid-template-columns: 1fr;
   }
 }
+
+.data-transfer {
+  display: flex;
+  gap: 1rem;
+}
+
+.data-transfer button,
+.data-transfer .import-label {
+  padding: 0.5rem 1rem;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: black;
+}
+
+.data-transfer button:hover,
+.data-transfer .import-label:hover {
+  background-color: #e0e0e0;
+}
