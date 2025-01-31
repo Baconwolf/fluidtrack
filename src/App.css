@@ -1,8 +1,11 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .logo {
@@ -131,4 +134,19 @@ input {
 .data-transfer button:hover,
 .data-transfer .import-label:hover {
   background-color: #e0e0e0;
+}
+
+/* Adjust mobile styles to prevent scrolling */
+@media (max-width: 768px) {
+  #root {
+    padding: 0.5rem;
+  }
+
+  .card {
+    padding: 1em;
+  }
+
+  .input-row {
+    padding: 0 0.5rem;
+  }
 }
