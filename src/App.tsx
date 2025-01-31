@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import { FluidTable } from './components/FluidTable'
 import { FluidChart } from './components/FluidChart'
+import { FluidRateChart } from './components/FluidRateChart'
 
 function App() {
   // Format current datetime to match datetime-local input format (YYYY-MM-DDThh:mm)
@@ -73,7 +74,12 @@ function App() {
 
         <div className="entries-section">
           <h3>Previous Entries</h3>
-          {entries.length > 0 && <FluidChart entries={entries} />}
+          {entries.length > 0 && (
+            <div className="charts-container">
+              <FluidChart entries={entries} />
+              <FluidRateChart entries={entries} />
+            </div>
+          )}
           <FluidTable
             entries={entries}
             onClear={handleClear}

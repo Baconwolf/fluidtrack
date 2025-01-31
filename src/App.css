@@ -40,3 +40,21 @@
 .read-the-docs {
   color: #888;
 }
+
+.entries-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.charts-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 1200px) {
+  .charts-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
