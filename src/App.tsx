@@ -4,6 +4,7 @@ import { FluidTable } from './components/FluidTable'
 import { FluidChart } from './components/FluidChart'
 import { FluidRateChart } from './components/FluidRateChart'
 import { DataTransfer } from './components/DataTransfer'
+import { FluidBag } from './components/FluidBag'
 
 function App() {
   // Format current datetime to match datetime-local input format (YYYY-MM-DDThh:mm)
@@ -110,6 +111,10 @@ function App() {
         <div className="entries-section">
           {entries.length > 0 && (
             <div className="charts-container">
+              <FluidBag
+                currentAmount={Number(entries[entries.length - 1].amount) - Number(baseAmount)}
+                maxCapacity={2000}
+              />
               <FluidChart entries={entries} />
               <FluidRateChart entries={entries} windowHours={24} />
               <FluidRateChart entries={entries} windowHours={48} />
