@@ -37,23 +37,23 @@ interface FluidRateChartProps {
 export function FluidRateChart({ entries }: FluidRateChartProps) {
     // Calculate daily rates
     const calculateDailyRates = () => {
-        if (entries.length < 2) return []
+        if (entries.length < 3) return [] // Need at least 3 points now
 
         const sortedEntries = [...entries].sort((a, b) =>
             new Date(a.datetime).getTime() - new Date(b.datetime).getTime()
         )
 
         const rates = []
-        for (let i = 1; i < sortedEntries.length; i++) {
+        for (let i = 2; i < sortedEntries.length; i++) {
             const currentEntry = sortedEntries[i]
-            const prevEntry = sortedEntries[i - 1]
+            const prevEntry2 = sortedEntries[i - 2]  // Two entries back
 
             const timeDiff = new Date(currentEntry.datetime).getTime() -
-                new Date(prevEntry.datetime).getTime()
+                new Date(prevEntry2.datetime).getTime()
             const hoursDiff = timeDiff / (1000 * 60 * 60)
 
-            // Calculate ml per 24 hours
-            const amountDiff = Number(currentEntry.amount) - Number(prevEntry.amount)
+            // Calculate ml per 24 hours over two points
+            const amountDiff = Number(currentEntry.amount) - Number(prevEntry2.amount)
             const rate = (amountDiff / hoursDiff) * 24
 
             rates.push({
