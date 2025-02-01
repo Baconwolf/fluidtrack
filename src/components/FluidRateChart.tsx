@@ -32,9 +32,10 @@ interface FluidEntry {
 
 interface FluidRateChartProps {
     entries: FluidEntry[];
+    windowHours?: number;
 }
 
-export function FluidRateChart({ entries }: FluidRateChartProps) {
+export function FluidRateChart({ entries, windowHours = 24 }: FluidRateChartProps) {
     // Calculate daily rates
     const calculateDailyRates = () => {
         if (entries.length < 2) return [] // Need at least 2 points
@@ -48,23 +49,21 @@ export function FluidRateChart({ entries }: FluidRateChartProps) {
             const currentEntry = sortedEntries[i]
             const currentTime = new Date(currentEntry.datetime).getTime()
 
-            // Find all entries within the last 24 hours
+            // Find all entries within the specified time window
             const relevantEntries = sortedEntries.filter((entry, index) => {
                 const entryTime = new Date(entry.datetime).getTime()
                 const hoursDiff = (currentTime - entryTime) / (1000 * 60 * 60)
-                return index < i && hoursDiff <= 24
+                return index < i && hoursDiff <= windowHours
             })
 
             if (relevantEntries.length > 0) {
-                // Get the earliest entry within the 24-hour window
                 const earliestEntry = relevantEntries[0]
-
                 const timeDiff = currentTime - new Date(earliestEntry.datetime).getTime()
                 const hoursDiff = timeDiff / (1000 * 60 * 60)
 
-                // Calculate ml per 24 hours using the earliest entry in the window
+                // Calculate ml per window period
                 const amountDiff = Number(currentEntry.amount) - Number(earliestEntry.amount)
-                const rate = (amountDiff / hoursDiff) * 24
+                const rate = (amountDiff / hoursDiff) * windowHours
 
                 rates.push({
                     datetime: currentEntry.datetime,
@@ -81,7 +80,7 @@ export function FluidRateChart({ entries }: FluidRateChartProps) {
     const chartData = {
         datasets: [
             {
-                label: 'Fluid Rate (ml/24h)',
+                label: `Fluid Rate (ml/${windowHours}h)`,
                 data: rateData.map(entry => ({
                     x: new Date(entry.datetime),
                     y: entry.rate
@@ -140,7 +139,7 @@ export function FluidRateChart({ entries }: FluidRateChartProps) {
                 beginAtZero: true,
                 title: {
                     display: true,
-                    text: 'ml per 24 hours'
+                    text: `ml per ${windowHours} hours`
                 }
             }
         }

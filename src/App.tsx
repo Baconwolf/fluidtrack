@@ -111,7 +111,8 @@ function App() {
           {entries.length > 0 && (
             <div className="charts-container">
               <FluidChart entries={entries} />
-              <FluidRateChart entries={entries} />
+              <FluidRateChart entries={entries} windowHours={24} />
+              <FluidRateChart entries={entries} windowHours={48} />
             </div>
           )}
           <FluidTable
