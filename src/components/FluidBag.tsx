@@ -1,5 +1,3 @@
-import './FluidBag.css'
-
 interface FluidBagProps {
     currentAmount: number;
     maxCapacity?: number;
