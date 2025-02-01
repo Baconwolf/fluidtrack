@@ -37,29 +37,40 @@ interface FluidRateChartProps {
 export function FluidRateChart({ entries }: FluidRateChartProps) {
     // Calculate daily rates
     const calculateDailyRates = () => {
-        if (entries.length < 3) return [] // Need at least 3 points now
+        if (entries.length < 2) return [] // Need at least 2 points
 
         const sortedEntries = [...entries].sort((a, b) =>
             new Date(a.datetime).getTime() - new Date(b.datetime).getTime()
         )
 
         const rates = []
-        for (let i = 2; i < sortedEntries.length; i++) {
+        for (let i = 1; i < sortedEntries.length; i++) {
             const currentEntry = sortedEntries[i]
-            const prevEntry2 = sortedEntries[i - 2]  // Two entries back
+            const currentTime = new Date(currentEntry.datetime).getTime()
 
-            const timeDiff = new Date(currentEntry.datetime).getTime() -
-                new Date(prevEntry2.datetime).getTime()
-            const hoursDiff = timeDiff / (1000 * 60 * 60)
-
-            // Calculate ml per 24 hours over two points
-            const amountDiff = Number(currentEntry.amount) - Number(prevEntry2.amount)
-            const rate = (amountDiff / hoursDiff) * 24
-
-            rates.push({
-                datetime: currentEntry.datetime,
-                rate: Math.round(rate)
+            // Find all entries within the last 24 hours
+            const relevantEntries = sortedEntries.filter((entry, index) => {
+                const entryTime = new Date(entry.datetime).getTime()
+                const hoursDiff = (currentTime - entryTime) / (1000 * 60 * 60)
+                return index < i && hoursDiff <= 24
             })
+
+            if (relevantEntries.length > 0) {
+                // Get the earliest entry within the 24-hour window
+                const earliestEntry = relevantEntries[0]
+
+                const timeDiff = currentTime - new Date(earliestEntry.datetime).getTime()
+                const hoursDiff = timeDiff / (1000 * 60 * 60)
+
+                // Calculate ml per 24 hours using the earliest entry in the window
+                const amountDiff = Number(currentEntry.amount) - Number(earliestEntry.amount)
+                const rate = (amountDiff / hoursDiff) * 24
+
+                rates.push({
+                    datetime: currentEntry.datetime,
+                    rate: Math.round(rate)
+                })
+            }
         }
 
         return rates
