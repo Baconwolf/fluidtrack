@@ -81,10 +81,17 @@ export function FluidRateChart({ entries, windowHours = 24 }: FluidRateChartProp
         datasets: [
             {
                 label: `Fluid Rate (ml/${windowHours}h)`,
-                data: rateData.map(entry => ({
-                    x: new Date(entry.datetime),
-                    y: entry.rate
-                })),
+                data: rateData
+                    .filter(entry => {
+                        const firstEntryTime = new Date(entries[0].datetime).getTime();
+                        const entryTime = new Date(entry.datetime).getTime();
+                        const hoursSinceStart = (entryTime - firstEntryTime) / (1000 * 60 * 60);
+                        return hoursSinceStart >= 12;
+                    })
+                    .map(entry => ({
+                        x: new Date(entry.datetime),
+                        y: entry.rate
+                    })),
                 borderColor: 'rgb(255, 99, 132)',
                 tension: 0.1
             }
