@@ -25,6 +25,7 @@ function App() {
   interface FluidEntry {
     datetime: string;
     amount: string;
+    baseAmount: string;
   }
 
   const [entries, setEntries] = useState<FluidEntry[]>(() => {
@@ -35,7 +36,11 @@ function App() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const totalAmount = (Number(fluidAmount) + Number(baseAmount)).toString()
-    const newEntry = { datetime, amount: totalAmount }
+    const newEntry = {
+      datetime,
+      amount: totalAmount,
+      baseAmount
+    }
     const updatedEntries = [...entries, newEntry]
     setEntries(updatedEntries)
     localStorage.setItem('fluidEntries', JSON.stringify(updatedEntries))
@@ -64,7 +69,7 @@ function App() {
         <h2>Fluid Tracker</h2>
         <form onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="baseAmount">Base Amount (ml):</label>
+            <label htmlFor="baseAmount">Carryover (ml):</label>
             <input
               type="number"
               id="baseAmount"
@@ -88,7 +93,7 @@ function App() {
               />
             </div>
             <div>
-              <label htmlFor="fluid">Additional Fluid (ml):</label>
+              <label htmlFor="fluid">Fluid in Bag (ml):</label>
               <input
                 type="number"
                 id="fluid"
@@ -100,7 +105,7 @@ function App() {
               {Number(baseAmount) > 0 && (
                 <small className="helper-text">
                   Total: {Number(fluidAmount) + Number(baseAmount)}ml
-                  (Base: {baseAmount}ml + Additional: {fluidAmount}ml)
+                  (Carryover: {baseAmount}ml + In Bag: {fluidAmount}ml)
                 </small>
               )}
             </div>
@@ -112,7 +117,7 @@ function App() {
           {entries.length > 0 && (
             <div className="charts-container">
               <FluidBag
-                currentAmount={Number(entries[entries.length - 1].amount) - Number(baseAmount)}
+                currentAmount={Number(entries[entries.length - 1].amount) - Number(entries[entries.length - 1].baseAmount)}
                 maxCapacity={2000}
               />
               <FluidChart entries={entries} />

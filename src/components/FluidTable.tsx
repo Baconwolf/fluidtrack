@@ -4,6 +4,7 @@ import './FluidTable.css'
 interface FluidEntry {
     datetime: string;
     amount: string;
+    baseAmount: string;
 }
 
 interface FluidTableProps {
@@ -31,13 +32,17 @@ export function FluidTable({ entries, onClear }: FluidTableProps) {
                                 <thead>
                                     <tr>
                                         <th>Date & Time</th>
-                                        <th>Amount (ml)</th>
+                                        <th>Carryover (ml)</th>
+                                        <th>Amount in Bag (ml)</th>
+                                        <th>Total Amount (ml)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {entries.map((entry, index) => (
                                         <tr key={index}>
                                             <td>{new Date(entry.datetime).toLocaleString()}</td>
+                                            <td>{entry.baseAmount}</td>
+                                            <td>{Number(entry.amount) - Number(entry.baseAmount)}</td>
                                             <td>{entry.amount}</td>
                                         </tr>
                                     ))}
