@@ -1,0 +1,47 @@
+.fluid-bag-container {
+    width: 60px;
+    margin: 10px auto;
+    text-align: center;
+}
+
+.fluid-bag {
+    position: relative;
+    width: 40px;
+    height: 80px;
+    margin: 0 auto;
+    border: 2px solid #666;
+    border-radius: 0 0 10px 10px;
+    overflow: hidden;
+}
+
+.fluid-bag-fill {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: rgba(255, 150, 150, 0.7);
+    transition: height 0.5s ease-out;
+    border-radius: 0 0 10px 10px;
+}
+
+.measurement-line {
+    position: absolute;
+    width: 100%;
+    border-bottom: 1px solid #999;
+    font-size: 8px;
+}
+
+.measurement-label {
+    position: absolute;
+    right: 105%;
+    transform: translateY(-50%);
+}
+
+.fluid-amount {
+    margin-top: 5px;
+    font-size: 10px;
+}
+
+.fluid-datetime {
+    font-size: 8px;
+    color: #666;
+} 

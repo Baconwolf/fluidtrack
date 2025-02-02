@@ -116,10 +116,20 @@ function App() {
         <div className="entries-section">
           {entries.length > 0 && (
             <div className="charts-container">
-              <FluidBag
-                currentAmount={Number(entries[entries.length - 1].amount) - Number(entries[entries.length - 1].baseAmount)}
-                maxCapacity={2000}
-              />
+              <div className="fluid-bags-list">
+                {entries
+                  .filter((entry) => {
+                    return entries[entries.length - 1].baseAmount === entry.baseAmount;
+                  })
+                  .map((entry) => (
+                    <FluidBag
+                      key={entry.datetime}
+                      currentAmount={Number(entry.amount) - Number(entry.baseAmount)}
+                      maxCapacity={600}
+                      label={new Date(entry.datetime).toLocaleString()}
+                    />
+                  ))}
+              </div>
               <FluidChart entries={entries} />
               <FluidRateChart entries={entries} windowHours={24} />
               <FluidRateChart entries={entries} windowHours={48} />
