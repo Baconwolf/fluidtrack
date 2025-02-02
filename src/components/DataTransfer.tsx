@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 interface DataTransferProps {
     entries: Array<{ datetime: string; amount: string }>;
-    onImport: (newEntries: Array<{ datetime: string; amount: string }>) => void;
+    onImport: (newEntries: Array<{ datetime: string; amount: string; baseAmount: string; }>) => void;
 }
 
 export function DataTransfer({ entries, onImport }: DataTransferProps) {
